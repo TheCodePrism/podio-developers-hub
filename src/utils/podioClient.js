@@ -34,8 +34,7 @@ export async function createPodioClient(creds, addLog, trackRequest, authMethodO
     }
 
     const token = await getValidToken();
-    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    const useProxy = !isLocal && localStorage.getItem('podio_use_proxy') === 'true';
+    const useProxy = localStorage.getItem('podio_use_proxy') === 'true';
     const baseUrl = useProxy ? '/api/proxy' : 'https://api.podio.com';
     const url = useProxy 
       ? `${baseUrl}?path=${encodeURIComponent(path)}` 
