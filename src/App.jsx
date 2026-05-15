@@ -23,10 +23,13 @@ import DataMigrator from './modules/DataMigrator';
 import SchemaBuilder from './modules/SchemaBuilder';
 import NetworkInspector from './components/NetworkInspector';
 import CommandPalette from './components/CommandPalette';
+import StorageManager from './modules/StorageManager';
+import ApiSandbox from './modules/ApiSandbox';
 import {
   LayoutDashboard, Plus, History, Filter, Eye,
   Search, Globe, Upload, Columns, Activity, Share2,
-  X, Layers, Microscope, MessageSquare, Code2, Package, Database
+  X, Layers, Microscope, MessageSquare, Code2, Package, Database,
+  Terminal
 } from 'lucide-react';
 
 const MODULES = {
@@ -49,6 +52,8 @@ const MODULES = {
   'data-migrator':    DataMigrator,
   'schema-builder':   SchemaBuilder,
   'inspector':        NetworkInspector,
+  'storage-manager':  StorageManager,
+  'api-sandbox':      ApiSandbox,
 };
 
 const ALL_TOOLS = [
@@ -71,6 +76,8 @@ const ALL_TOOLS = [
   { id: 'schema-builder',   label: 'Schema Builder',    icon: Database },
   { id: 'bulk-ops',         label: 'Bulk Operations',   icon: Layers },
   { id: 'inspector',        label: 'Network Inspector', icon: Activity },
+  { id: 'storage-manager',  label: 'Storage Manager',   icon: Database },
+  { id: 'api-sandbox',      label: 'API Sandbox',       icon: Terminal },
 ];
 
 function TopBar({ onOpenConfig }) {

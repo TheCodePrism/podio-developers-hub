@@ -43,6 +43,7 @@ export default function ConfigPanel({ isOpen, onClose, onSave }) {
   const handleSave = () => {
     const toSave = { ...creds, authMethod };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+    localStorage.removeItem('podio_access_token'); // Clear cache to ensure new settings apply
     onSave(toSave);
     onClose();
   };
@@ -50,6 +51,9 @@ export default function ConfigPanel({ isOpen, onClose, onSave }) {
   const handleSignOut = () => {
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem('podio_access_token');
+    localStorage.removeItem('podio_access_token_app');
+    localStorage.removeItem('podio_access_token_password');
+    localStorage.removeItem('podio_access_token_oauth2');
     setCreds({});
     setTestStatus(null);
     setTestMessage('');
@@ -62,13 +66,30 @@ export default function ConfigPanel({ isOpen, onClose, onSave }) {
     setTestMessage('');
     try {
       const token = await getPodioAccessToken({ ...creds, authMethod });
-      const res = await fetch('https://api.podio.com/user', {
+      
+      // Select endpoint based on auth method
+      // App Auth cannot access /user, it only has access to its own app
+      const testUrl = authMethod === 'app' 
+        ? `https://api.podio.com/app/${creds.appId}` 
+        : 'https://api.podio.com/user';
+
+      const res = await fetch(testUrl, {
         headers: { Authorization: `OAuth2 ${token}` }
       });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const user = await res.json();
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error_description || `HTTP ${res.status}`);
+      }
+
+      const data = await res.json();
       setTestStatus('ok');
-      setTestMessage(`Connected as ${user.name || user.mail || 'Podio User'}`);
+      
+      if (authMethod === 'app') {
+        setTestMessage(`Connected to App: "${data.config?.name || creds.appId}"`);
+      } else {
+        setTestMessage(`Connected as ${data.name || data.mail || 'Podio User'}`);
+      }
     } catch (err) {
       setTestStatus('fail');
       setTestMessage(err.message);

@@ -4,13 +4,20 @@ import { loadCreds } from '../components/ConfigPanel';
 const PodioContext = createContext();
 
 export function PodioProvider({ children }) {
-  const [creds, setCreds] = useState({});
+   const [creds, setCreds] = useState({});
   const [logsByModule, setLogsByModule] = useState({});
   const [requestHistory, setRequestHistory] = useState([]);
+  const [storageHistory, setStorageHistory] = useState([]);
   
   // Shared context for tools
   const [activeSpaceId, setActiveSpaceId] = useState(() => localStorage.getItem('podio_active_space') || '');
   const [activeAppId, setActiveAppId] = useState(() => localStorage.getItem('podio_active_app') || '');
+  const [theme, setTheme] = useState(() => localStorage.getItem('podio_hub_theme') || 'theme-default');
+
+  useEffect(() => {
+    document.body.className = theme;
+    localStorage.setItem('podio_hub_theme', theme);
+  }, [theme]);
 
   useEffect(() => {
     setCreds(loadCreds());
@@ -59,6 +66,14 @@ export function PodioProvider({ children }) {
     }, ...prev].slice(0, 200)); // Keep more history for dashboard sorting
   };
 
+  const trackStorageActivity = (activity) => {
+    setStorageHistory(prev => [{
+      id: Date.now() + Math.random(),
+      ...activity,
+      timestamp: Date.now()
+    }, ...prev].slice(0, 100)); // Keep last 100 storage events
+  };
+
   return (
     <PodioContext.Provider value={{ 
       creds, 
@@ -70,8 +85,12 @@ export function PodioProvider({ children }) {
       trackRequest,
       activeSpaceId,
       setActiveSpaceId,
-      activeAppId,
-      setActiveAppId
+       activeAppId,
+      setActiveAppId,
+      theme,
+      setTheme,
+      storageHistory,
+      trackStorageActivity
     }}>
       {children}
     </PodioContext.Provider>

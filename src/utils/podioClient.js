@@ -1,17 +1,38 @@
 import { getPodioAccessToken } from './podioAuth';
+import { get as getCache, set as setCache } from 'idb-keyval';
 
-export async function createPodioClient(creds, addLog, trackRequest) {
+export async function createPodioClient(creds, addLog, trackRequest, authMethodOverride, trackStorageActivity) {
   let accessToken = null;
 
   async function getValidToken() {
     if (accessToken) return accessToken;
-    addLog('🔐 Authenticating...', 'info');
-    accessToken = await getPodioAccessToken(creds);
-    addLog('✅ Authenticated.', 'success');
+    const method = authMethodOverride || creds.authMethod || 'app';
+    addLog(`🔐 Authenticating (${method})...`, 'info');
+    accessToken = await getPodioAccessToken({ ...creds, authMethod: method });
+    addLog(`✅ Authenticated (${method}).`, 'success');
     return accessToken;
   }
 
   async function request(path, options = {}) {
+    // 1. Check Cache for App Schemas (unless forceRefresh is true)
+    const isAppSchemaRequest = /^\/app\/\d+$/.test(path);
+    const cacheKey = `podio_schema_${path}`;
+    
+    if (isAppSchemaRequest && !options.forceRefresh && (options.method === 'GET' || !options.method)) {
+      try {
+        const cached = await getCache(cacheKey);
+        if (cached && (Date.now() - cached.timestamp < 1000 * 60 * 60 * 24)) { // 24hr cache
+          addLog(`⚡ Loaded from local cache: ${path}`, 'success');
+          if (trackStorageActivity) {
+            trackStorageActivity({ type: 'read', store: 'IndexedDB', key: cacheKey, size: new Blob([JSON.stringify(cached.data)]).size });
+          }
+          return cached.data;
+        }
+      } catch (e) {
+        console.warn('Cache read failed:', e);
+      }
+    }
+
     const token = await getValidToken();
     const url = path.startsWith('http') ? path : `https://api.podio.com${path}`;
     
@@ -64,6 +85,18 @@ export async function createPodioClient(creds, addLog, trackRequest) {
 
       if (!response.ok) {
         throw new Error(data?.error_description || JSON.stringify(data) || `HTTP ${response.status}`);
+      }
+
+      // 2. Save Cache for App Schemas
+      if (isAppSchemaRequest && data && (options.method === 'GET' || !options.method)) {
+        try {
+          await setCache(cacheKey, { timestamp: Date.now(), data });
+          if (trackStorageActivity) {
+            trackStorageActivity({ type: 'write', store: 'IndexedDB', key: cacheKey, size: new Blob([JSON.stringify(data)]).size });
+          }
+        } catch (e) {
+          console.warn('Cache write failed:', e);
+        }
       }
 
       return data;

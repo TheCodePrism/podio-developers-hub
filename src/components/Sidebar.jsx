@@ -3,7 +3,8 @@ import {
   Settings, Plus, History, Filter, Eye, Zap,
   Search, Globe, Upload, Activity, LayoutDashboard,
   Command, Share2, Layers, Microscope, MessageSquare,
-  Map, ChevronDown, Code2, Package, Database
+  Map, ChevronDown, Code2, Package, Database, HardDrive,
+  Terminal
 } from 'lucide-react';
 import { usePodio } from '../context/PodioContext';
 import logoImg from '../assets/logo.png';
@@ -13,6 +14,7 @@ const GROUPS = [
     label: 'Overview',
     tools: [
       { id: 'dashboard',        label: 'Dashboard',        icon: LayoutDashboard },
+      { id: 'storage-manager',  label: 'Storage & Cache',  icon: HardDrive },
     ],
   },
   {
@@ -55,6 +57,7 @@ const GROUPS = [
     tools: [
       { id: 'code-gen',         label: 'Code Generator',    icon: Code2 },
       { id: 'diff-tool',        label: 'Diff Tool',        icon: Layers },
+      { id: 'api-sandbox',      label: 'API Sandbox',       icon: Terminal },
       { id: 'inspector',        label: 'Network Inspector', icon: Activity },
     ],
   },

@@ -147,8 +147,34 @@ export default function Dashboard() {
       </div>
 
       <div className="dashboard-main" style={{ display: 'grid', gridTemplateColumns: '2.5fr 1fr', gap: '32px', alignItems: 'start' }}>
-        {/* Left Column: Recent Activity */}
-        <div className="card" style={{ padding: '0', overflow: 'hidden', display: 'flex', flexDirection: 'column', minHeight: '653px' }}>
+        {/* Left Column */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+          {/* Rate Limit and Context Grid */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+        {/* Rate Limit Panel */}
+        <RateLimitPanel rateLimit={rateLimit} />
+
+        {/* Active Context */}
+        <div className="card" style={{ padding: '24px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
+            <Settings size={18} color="var(--violet)" />
+            <h3 style={{ fontSize: '16px', fontWeight: 800 }}>Active Context</h3>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            <div style={{ background: 'rgba(129,140,248,0.05)', padding: '12px', borderRadius: 'var(--radius)', border: '1px solid rgba(129,140,248,0.2)' }}>
+              <div className="label">Active Space</div>
+              <div style={{ fontWeight: 700, color: 'var(--text-1)' }}>{activeSpaceId || 'None Selected'}</div>
+            </div>
+            <div style={{ background: 'rgba(56,189,248,0.05)', padding: '12px', borderRadius: 'var(--radius)', border: '1px solid rgba(56,189,248,0.2)' }}>
+              <div className="label">Active App</div>
+              <div style={{ fontWeight: 700, color: 'var(--text-1)' }}>{activeAppId || 'None Selected'}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Activity Stream */}
+          <div className="card" style={{ padding: '0', overflow: 'hidden', display: 'flex', flexDirection: 'column', minHeight: '653px' }}>
           <div style={{ padding: '24px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <div style={{ background: 'var(--accent-dim)', padding: '8px', borderRadius: '8px' }}>
@@ -210,30 +236,11 @@ export default function Dashboard() {
             )}
           </div>
         </div>
+      </div>
 
         {/* Right Column */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
 
-          {/* Rate Limit Panel */}
-          <RateLimitPanel rateLimit={rateLimit} />
-
-          {/* Active Context */}
-          <div className="card" style={{ padding: '24px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
-              <Settings size={18} color="var(--violet)" />
-              <h3 style={{ fontSize: '16px', fontWeight: 800 }}>Active Context</h3>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-              <div style={{ background: 'rgba(129,140,248,0.05)', padding: '12px', borderRadius: 'var(--radius)', border: '1px solid rgba(129,140,248,0.2)' }}>
-                <div className="label">Active Space</div>
-                <div style={{ fontWeight: 700, color: 'var(--text-1)' }}>{activeSpaceId || 'None Selected'}</div>
-              </div>
-              <div style={{ background: 'rgba(56,189,248,0.05)', padding: '12px', borderRadius: 'var(--radius)', border: '1px solid rgba(56,189,248,0.2)' }}>
-                <div className="label">Active App</div>
-                <div style={{ fontWeight: 700, color: 'var(--text-1)' }}>{activeAppId || 'None Selected'}</div>
-              </div>
-            </div>
-          </div>
 
           {/* Developer Tips */}
           <div className="card" style={{ padding: '24px' }}>

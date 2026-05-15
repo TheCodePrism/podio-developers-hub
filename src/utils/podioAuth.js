@@ -39,7 +39,8 @@ export async function getPodioAccessToken(creds) {
   const common = { client_id: clientId, client_secret: clientSecret };
 
   // 1. Check local cache
-  const cachedStr = localStorage.getItem('podio_access_token');
+  const cacheKey = `podio_access_token_${authMethod}`;
+  const cachedStr = localStorage.getItem(cacheKey);
   if (cachedStr) {
     try {
       const cached = JSON.parse(cachedStr);
@@ -55,15 +56,15 @@ export async function getPodioAccessToken(creds) {
             grant_type: 'refresh_token',
             refresh_token: cached.refresh_token,
           });
-          saveToken(data);
+          saveToken(data, authMethod);
           return data.access_token;
         } catch (refreshErr) {
           console.warn('Failed to refresh token, falling back to full auth', refreshErr);
-          localStorage.removeItem('podio_access_token');
+          localStorage.removeItem(cacheKey);
         }
       }
     } catch (e) {
-      localStorage.removeItem('podio_access_token');
+      localStorage.removeItem(cacheKey);
     }
   }
 
@@ -99,20 +100,18 @@ export async function getPodioAccessToken(creds) {
       code: creds.oauthCode,
       redirect_uri: creds.oauthRedirectUri || 'https://localhost',
     });
-    
-    // IMPORTANT: Clear the oauthCode from creds so we don't try to reuse it if cache is manually cleared
-    // This requires updating the creds in local storage, but since we cache the token we should be fine.
   } else {
     throw new Error(`Unknown auth method: "${authMethod}". Open ⚙ Settings and choose one.`);
   }
 
-  saveToken(data);
+  saveToken(data, authMethod);
   return data.access_token;
 }
 
-function saveToken(data) {
+function saveToken(data, authMethod) {
   const expires_at = Date.now() + (data.expires_in * 1000);
-  localStorage.setItem('podio_access_token', JSON.stringify({
+  const cacheKey = `podio_access_token_${authMethod}`;
+  localStorage.setItem(cacheKey, JSON.stringify({
     access_token: data.access_token,
     refresh_token: data.refresh_token,
     expires_at
