@@ -72,6 +72,12 @@ export async function createPodioClient(creds, addLog, trackRequest, authMethodO
       const rateRemaining = response.headers.get('x-rate-limit-remaining');
       const rateLimit = response.headers.get('x-rate-limit-limit');
       
+      if (useProxy) {
+        const h = {};
+        response.headers.forEach((v, k) => h[k] = v);
+        console.log('📡 Proxy Response Headers:', h);
+      }
+
       if (rateRemaining && rateLimit) {
         const detail = { remaining: parseInt(rateRemaining, 10), limit: parseInt(rateLimit, 10) };
         window.dispatchEvent(new CustomEvent('podioRateLimit', { detail }));

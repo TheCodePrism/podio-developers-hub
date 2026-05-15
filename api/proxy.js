@@ -34,22 +34,22 @@ export default async function handler(req, res) {
       body: ['POST', 'PUT', 'PATCH'].includes(req.method) ? JSON.stringify(req.body) : undefined,
     });
 
-    // 2. Extract headers we want to expose
-    const headersToExpose = [
-      'X-Rate-Limit-Limit',
-      'X-Rate-Limit-Remaining',
-      'Content-Type'
-    ];
+    // 2. Extract and Normalize headers
+    // We send both casing versions to be safe with different hosting platforms
+    const limit = podioResponse.headers.get('x-rate-limit-limit');
+    const remaining = podioResponse.headers.get('x-rate-limit-remaining');
 
-    // Copy headers from Podio response to our proxy response
-    podioResponse.headers.forEach((v, k) => {
-      if (k.toLowerCase().startsWith('x-rate-limit-')) {
-        res.setHeader(k, v);
-      }
-    });
+    if (limit) {
+      res.setHeader('X-Rate-Limit-Limit', limit);
+      res.setHeader('x-rate-limit-limit', limit);
+    }
+    if (remaining) {
+      res.setHeader('X-Rate-Limit-Remaining', remaining);
+      res.setHeader('x-rate-limit-remaining', remaining);
+    }
 
     // 3. Crucial: Tell the browser it's okay to see these headers
-    res.setHeader('Access-Control-Expose-Headers', headersToExpose.join(', '));
+    res.setHeader('Access-Control-Expose-Headers', 'X-Rate-Limit-Limit, X-Rate-Limit-Remaining, x-rate-limit-limit, x-rate-limit-remaining, Content-Type');
 
     const data = await podioResponse.json();
     res.status(podioResponse.status).json(data);
