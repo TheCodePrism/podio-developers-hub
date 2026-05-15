@@ -265,9 +265,12 @@ export default function StorageManager() {
                   <Shield size={22} color="var(--accent)" />
                 </div>
                 <div>
-                  <h2 style={{ margin: 0, fontSize: '15px', fontWeight: 700, color: 'var(--text-1)' }}>Use API Proxy</h2>
-                  <div style={{ fontSize: '12px', color: 'var(--text-3)', marginTop: '4px', maxWidth: '400px' }}>
-                    Route all Podio API calls through a secure serverless proxy to solve CORS issues and view live rate limits. Recommended for live deployments.
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                    <h2 style={{ margin: 0, fontSize: '15px', fontWeight: 700, color: 'var(--text-1)' }}>Use API Proxy</h2>
+                    <span style={{ fontSize: '9px', fontWeight: 800, padding: '2px 6px', borderRadius: '4px', background: 'var(--accent-dim)', color: 'var(--accent)', textTransform: 'uppercase' }}>Production Only</span>
+                  </div>
+                  <div style={{ fontSize: '12px', color: 'var(--text-3)', maxWidth: '400px' }}>
+                    Route all Podio API calls through a secure serverless proxy to solve CORS issues. This is ignored on localhost to prevent crashes.
                   </div>
                 </div>
               </div>
