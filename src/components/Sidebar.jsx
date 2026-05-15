@@ -72,7 +72,7 @@ export default function Sidebar({ activeTool, setActiveTool, onOpenConfig }) {
       flexShrink: 0,
       height: '100vh',
       overflowY: 'auto',
-      background: 'rgba(10,18,38,0.98)',
+      background: 'var(--bg-2)',
       borderRight: '1px solid var(--border)',
       display: 'flex',
       flexDirection: 'column',
@@ -83,7 +83,7 @@ export default function Sidebar({ activeTool, setActiveTool, onOpenConfig }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <img src={logoImg} alt="Podio Hub Logo" style={{
             width: '32px', height: '32px', borderRadius: '8px',
-            boxShadow: '0 4px 12px rgba(56,189,248,0.2)',
+            boxShadow: '0 4px 12px var(--accent-glow)',
             objectFit: 'cover'
           }} />
           <div>
@@ -95,9 +95,9 @@ export default function Sidebar({ activeTool, setActiveTool, onOpenConfig }) {
         {/* Ctrl+K hint */}
         <button
           onClick={() => window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true, bubbles: true }))}
-          style={{ marginTop: '12px', width: '100%', background: 'rgba(255,255,255,0.04)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '7px 10px', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', transition: 'var(--transition)', color: 'var(--text-3)', fontSize: '11px', fontFamily: 'inherit' }}
-          onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'}
-          onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.04)'}
+          style={{ marginTop: '12px', width: '100%', background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '7px 10px', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', transition: 'var(--transition)', color: 'var(--text-3)', fontSize: '11px', fontFamily: 'inherit' }}
+          onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-hover)'}
+          onMouseLeave={e => e.currentTarget.style.background = 'var(--surface-2)'}
         >
           <Command size={11} />
           <span>Command Palette</span>
@@ -123,7 +123,7 @@ export default function Sidebar({ activeTool, setActiveTool, onOpenConfig }) {
                     padding: '8px 10px',
                     borderRadius: 'var(--radius)',
                     border: 'none',
-                    background: active ? 'linear-gradient(135deg, rgba(56,189,248,0.15), rgba(129,140,248,0.1))' : 'transparent',
+                    background: active ? 'var(--accent-dim)' : 'transparent',
                     color: active ? 'var(--text-1)' : 'var(--text-3)',
                     cursor: 'pointer',
                     fontSize: '12.5px',
@@ -132,9 +132,9 @@ export default function Sidebar({ activeTool, setActiveTool, onOpenConfig }) {
                     textAlign: 'left',
                     transition: 'var(--transition)',
                     position: 'relative',
-                    boxShadow: active ? 'inset 0 0 0 1px rgba(56,189,248,0.2)' : 'none',
+                    boxShadow: active ? 'inset 0 0 0 1px var(--accent-dim)' : 'none',
                   }}
-                  onMouseEnter={e => { if (!active) { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.color = 'var(--text-2)'; } }}
+                  onMouseEnter={e => { if (!active) { e.currentTarget.style.background = 'var(--surface-hover)'; e.currentTarget.style.color = 'var(--text-2)'; } }}
                   onMouseLeave={e => { if (!active) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-3)'; } }}
                 >
                   {active && (
@@ -154,7 +154,7 @@ export default function Sidebar({ activeTool, setActiveTool, onOpenConfig }) {
         <button
           onClick={onOpenConfig}
           style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '9px', padding: '9px 10px', borderRadius: 'var(--radius)', border: 'none', background: 'transparent', color: 'var(--text-3)', cursor: 'pointer', fontSize: '12.5px', fontFamily: 'inherit', fontWeight: 500, textAlign: 'left', transition: 'var(--transition)' }}
-          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.color = 'var(--text-2)'; }}
+          onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-hover)'; e.currentTarget.style.color = 'var(--text-2)'; }}
           onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-3)'; }}
         >
           <Settings size={14} />
