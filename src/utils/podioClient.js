@@ -34,7 +34,11 @@ export async function createPodioClient(creds, addLog, trackRequest, authMethodO
     }
 
     const token = await getValidToken();
-    const url = path.startsWith('http') ? path : `https://api.podio.com${path}`;
+    const useProxy = localStorage.getItem('podio_use_proxy') === 'true';
+    const baseUrl = useProxy ? '/api/proxy' : 'https://api.podio.com';
+    const url = useProxy 
+      ? `${baseUrl}?path=${encodeURIComponent(path)}` 
+      : `${baseUrl}${path}`;
     
     const startTime = Date.now();
     addLog(`🌐 ${options.method || 'GET'} ${path}...`, 'info');
@@ -66,10 +70,10 @@ export async function createPodioClient(creds, addLog, trackRequest, authMethodO
 
       const rateRemaining = response.headers.get('x-rate-limit-remaining');
       const rateLimit = response.headers.get('x-rate-limit-limit');
+      
       if (rateRemaining && rateLimit) {
-        window.dispatchEvent(new CustomEvent('podioRateLimit', {
-          detail: { remaining: parseInt(rateRemaining, 10), limit: parseInt(rateLimit, 10) }
-        }));
+        const detail = { remaining: parseInt(rateRemaining, 10), limit: parseInt(rateLimit, 10) };
+        window.dispatchEvent(new CustomEvent('podioRateLimit', { detail }));
       }
 
       const duration = Date.now() - startTime;

@@ -45,6 +45,13 @@ function RateLimitPanel({ rateLimit }) {
         <div style={{ textAlign: 'center', padding: '20px 0', color: 'var(--text-3)', fontSize: '13px' }}>
           <Gauge size={28} style={{ opacity: 0.2, marginBottom: '8px', display: 'block', margin: '0 auto 8px' }} />
           Make an API call to see rate limit data.
+          
+          <div style={{ marginTop: '20px', padding: '12px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', textAlign: 'left', fontSize: '11px', lineHeight: '1.4', border: '1px solid var(--border)' }}>
+            <div style={{ color: 'var(--accent)', fontWeight: 800, marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <Shield size={12} /> Browser Security Note
+            </div>
+            Podio's API restricts these headers in browsers by default. To see live limits, use a <b>CORS Bypass</b> extension for Chrome/Edge.
+          </div>
         </div>
       ) : (
         <>
@@ -95,17 +102,11 @@ function RateLimitPanel({ rateLimit }) {
 }
 
 export default function Dashboard() {
-  const { requestHistory, creds, activeAppId, activeSpaceId } = usePodio();
+  const { requestHistory, creds, activeAppId, activeSpaceId, rateLimit } = usePodio();
   const [filterQuery, setFilterQuery] = useState('');
   const [sortField, setSortField] = useState('timestamp');
   const [sortDir, setSortDir] = useState('desc');
-  const [rateLimit, setRateLimit] = useState(null);
 
-  useEffect(() => {
-    const handler = (e) => setRateLimit(e.detail);
-    window.addEventListener('podioRateLimit', handler);
-    return () => window.removeEventListener('podioRateLimit', handler);
-  }, []);
 
   const successCount = requestHistory.filter(r => r.status >= 200 && r.status < 300).length;
   const avgLatency = requestHistory.length > 0 

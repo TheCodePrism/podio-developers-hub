@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { HardDrive, Trash2, Download, Upload, RefreshCw, Database, FileJson, Layers, Palette, Check } from 'lucide-react';
+import { HardDrive, Trash2, Download, Upload, RefreshCw, Database, FileJson, Layers, Palette, Check, Shield } from 'lucide-react';
 import { usePodio, useModuleLogger } from '../context/PodioContext';
 import { keys, clear as clearIdb, del as delIdb } from 'idb-keyval';
 
@@ -15,7 +15,8 @@ export default function StorageManager() {
   const { 
     creds, updateCreds, 
     theme, setTheme, 
-    storageHistory, trackStorageActivity 
+    storageHistory, trackStorageActivity,
+    useProxy, setUseProxy
   } = usePodio();
   const { logs, addLog, clearLogs } = useModuleLogger('storage-manager');
 
@@ -247,6 +248,44 @@ export default function StorageManager() {
                     Reset
                   </button>
                 )}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Connection Settings */}
+        <section style={{ marginTop: '32px' }}>
+          <div style={{ fontSize: '11px', fontWeight: 800, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '12px', marginLeft: '4px' }}>
+            Connection Settings
+          </div>
+          <div className="card" style={{ padding: '24px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
+                <div style={{ background: 'var(--accent-dim)', padding: '12px', borderRadius: '12px' }}>
+                  <Shield size={22} color="var(--accent)" />
+                </div>
+                <div>
+                  <h2 style={{ margin: 0, fontSize: '15px', fontWeight: 700, color: 'var(--text-1)' }}>Use API Proxy</h2>
+                  <div style={{ fontSize: '12px', color: 'var(--text-3)', marginTop: '4px', maxWidth: '400px' }}>
+                    Route all Podio API calls through a secure serverless proxy to solve CORS issues and view live rate limits. Recommended for live deployments.
+                  </div>
+                </div>
+              </div>
+              <div 
+                onClick={() => setUseProxy(!useProxy)}
+                style={{ 
+                  width: '50px', height: '26px', borderRadius: '99px', 
+                  background: useProxy ? 'var(--accent)' : 'var(--surface-hover)',
+                  border: '1px solid var(--border)', cursor: 'pointer', position: 'relative',
+                  transition: 'var(--transition)'
+                }}
+              >
+                <div style={{ 
+                  position: 'absolute', top: '2px', left: useProxy ? '26px' : '2px',
+                  width: '20px', height: '20px', borderRadius: '50%', background: '#fff',
+                  transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                }} />
               </div>
             </div>
           </div>
